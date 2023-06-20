@@ -28,7 +28,7 @@ Instructions for Best Results:
 
 6. Run the mapmakerbot.py script and carefully follow the instructions on the console. This stage is delicate as the script allows for a lot of customization and object transformation, but has limited error handling. Paying careful attention can help prevent errors, crashes, or unexpected outcomes.
 
-Running the Script
+# Running the Script
 
 To run the script, simply clone the repository and execute the script with Python.
 
@@ -48,18 +48,18 @@ When you run the script, it will prompt you for several inputs:
 6. Bounding values: The bounding values for the x and y coordinates of the map. It is used to limit the scope (or the area) of randomization.
 It will also ask you for object properties like rotation, scale, and position (x, y, z). These parameters can be set to 'default', 'r' for random or specific numerical values.
 
-Built With
+# Built With
 Python 3
 PyAutoGUI
 
-License
+# License
 This project is licensed under the GNU General Public License Version 2, June 1991. See the LICENSE file for details.
 
-Contributing
+# Contributing
 Please read CONTRIBUTING.md for details on our code of conduct, and the process for submitting pull requests to us.
 
-Authors
+# Authors
 SingularityMan
 
-Acknowledgments:
+# Acknowledgments:
 Thanks to PyAutoGUI for providing the functionality that this project is based on.
