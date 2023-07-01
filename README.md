@@ -7,6 +7,7 @@ To get started, you will need Python 3, openai and the PyAutoGUI library.
 You can install PyAutoGUI and openai via pip:
 
 pip install pyautogui
+
 pip install openai
 
 Instructions for Best Results:
