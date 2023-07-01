@@ -35,22 +35,22 @@ To run the script, simply clone the repository and execute the script with Pytho
 Usage
 When you run the script, it will prompt you for several inputs:
 
-1. Number of repetitions: The number of times to repeat the operation.
+1. Whether to use GPT-4 to generate a structure or biome. If the user answers 'y' then you will be prompted to choose between mode 1 (structures) or mode 2 (biomes). Then it will ask you what to build. Make sure to specify how many objects to add on the map. You should also be very specific, such as where to add them (x,y,z coordinates) and how many to add. Keep in mind, GPT-4 is not very good at building structures but it is very good at creating biomes. Makes sure you have the desired object highlighted before continuing.
 
-2. Frequency of object placement: How often to place an object. A value of 0 means always.
+2. If you answered 'n' then you will be prompted to specify how many repetitions, i.e. how many objects to add to the map.
 
-3. Space to randomize between movements: Defines the randomness in the bot's movement.
+3. Whether to randomize object selection. Default is 1 but you can specify as much as you'd like within the same object subfolder. Good for planting different types of trees, grass, foliage, etc.
+   
+4. Whether to stack objects one on top of the other. (for example placing trees on top of hills instead of directly on the ground)
 
-4. Stack objects: Whether to stack objects on top of each other.
+5. How many milliseconds between key presses.
 
-5. Time between keyboard presses: The delay between keyboard actions.
-
-6. Bounding values: The bounding values for the x and y coordinates of the map. It is used to limit the scope (or the area) of randomization.
-It will also ask you for object properties like rotation, scale, and position (x, y, z). These parameters can be set to 'default', 'r' for random or specific numerical values.
+6. Whether to enable object properties. If you answer 'y' you can modify the rotation, position and scaling of the objects. You can leave it at "default", randomize with 'r' (which will prompt you to provide a range of randomization) or your own specified value. For the Z-axis, you can also specify "Floor" to place the object directly on the ground, which is 500 on the z-axis on the default randomization map. 
 
 # Built With
 Python 3
 PyAutoGUI
+GPT-4 API
 
 # License
 This project is licensed under the GNU General Public License Version 2, June 1991. See the LICENSE file for details.
