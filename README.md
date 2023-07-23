@@ -7,10 +7,13 @@ To get started, you will need Python 3, openai and the PyAutoGUI library.
 You can install PyAutoGUI and openai via pip:
 
 pip install pyautogui
-
 pip install openai
 
+Note: Make sure to have an API Key from Openai. You won't be able to use GPT-4 without it but you can still use it manually if you don't have an API key.
+
 Instructions for Best Results:
+
+Include your api key in either the "api_key" file or inside the system environment variables, whichever you prefer, in order to use GPT-4.
 
 1. Download the optimized map for this bot from this link: [halowaypoint.com](https://www.halowaypoint.com/halo-infinite/ugc/maps/2cc7880e-f7bb-4bb4-9c07-bbb6c6189a07). While you may choose any map, the above-mentioned one is optimized for randomization.
 
