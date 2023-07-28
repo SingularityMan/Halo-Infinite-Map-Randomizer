@@ -15,9 +15,9 @@ Instructions for Best Results:
 
 Include your api key in either the "api_key" file or inside the system environment variables, whichever you prefer, in order to use GPT-4.
 
-1. Download the optimized map for this bot from this link: [halowaypoint.com](https://www.halowaypoint.com/halo-infinite/ugc/maps/2cc7880e-f7bb-4bb4-9c07-bbb6c6189a07). While you may choose any map, the above-mentioned one is optimized for randomization.
+1. Open Insittute, which is the default map for randomization for this script. You may also open other maps but you may have to modify the parameters in the console depending on the map.
 
-2. Once your map is loaded, choose the object you'd like to have randomized. It's recommended to use only static objects as the script is primarily designed for them. Make sure to leave the object highlighted before exiting the object browser table.
+2. Once your map is loaded, choose the object you'd like to have randomized. It's recommended to use only static objects as the script is primarily designed for them. Make sure to leave the object highlighted before exiting the object browser table. If you want to be able to select more than one object during randomization, you will have the opportunity to do so by specifying it in the console. If you want to randomize dynamic objects, you may do so inside Forge itself with a nodegraph that should allow you to do so.
 
 ![Image 1](https://github.com/SingularityMan/Halo-Infinite-Map-Randomizer/blob/main/Halo%20Infinite%206_19_2023%209_13_19%20PM.png)
 
@@ -27,9 +27,7 @@ Include your api key in either the "api_key" file or inside the system environme
   
 4. Return to the object browser with the desired object still highlighted, then close the object browser and delete the object from the map.
 
-5. Switch to test mode, wait for a moment, then return to Forge mode. Position your view to look straight down at the ground, in a top-down view.
-
-![Image 3](https://github.com/SingularityMan/Halo-Infinite-Map-Randomizer/blob/main/Halo%20Infinite%206_19_2023%209_12_40%20PM.png)
+5. Switch to test mode.
 
 6. Run the mapmakerbot.py script and carefully follow the instructions on the console. This stage is delicate as the script allows for a lot of customization and object transformation, but has limited error handling. Paying careful attention can help prevent errors, crashes, or unexpected outcomes.
 
