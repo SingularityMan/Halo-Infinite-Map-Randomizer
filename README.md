@@ -1,10 +1,17 @@
 # Halo-Infinite-Map-Randomizer
 
-Map Maker Bot is a Python script that uses PyAutoGUI to automate key presses and generate a map. It's primarily used to add objects to a grid in a pseudo-random manner based on user's specifications.
+Map Randomizer Bot is a Python script that uses PyAutoGUI to automate key presses and generate a map. It's primarily used to add objects to a grid in a pseudo-random manner based on user's specifications.
 
 To get started, you will need Python 3.10 or greater, openai and the PyAutoGUI library.
 
-You can install PyAutoGUI and openai via pip:
+First, open the command prompt and create a python venv:
+
+```
+python -m venv map_randomizer_bot
+forge_map_randomizer\Scripts\activate
+```
+
+Then, install PyAutoGUI and openai via pip:
 
 ```
 pip install pyautogui
