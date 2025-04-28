@@ -2,20 +2,22 @@
 
 Map Maker Bot is a Python script that uses PyAutoGUI to automate key presses and generate a map. It's primarily used to add objects to a grid in a pseudo-random manner based on user's specifications.
 
-To get started, you will need Python 3, openai and the PyAutoGUI library.
+To get started, you will need Python 3.10 or greater, openai and the PyAutoGUI library.
 
 You can install PyAutoGUI and openai via pip:
 
+```
 pip install pyautogui
 pip install openai
+```
 
-Note: Make sure to have an API Key from Openai. You won't be able to use GPT-4 without it but you can still use it manually if you don't have an API key.
+Note: Make sure to have an API Key from Openai. You won't be able to use GPT-4 without it, but you can still use it manually if you don't have an API key.
 
 Instructions for Best Results:
 
 Include your api key in either the "api_key" file or inside the system environment variables, whichever you prefer, in order to use GPT-4.
 
-1. Open Insittute, which is the default map for randomization for this script. You may also open other maps but you may have to modify the parameters in the console depending on the map.
+1. Open Institute, which is the default map for randomization for this script. You may also open other maps, but you may have to modify the parameters in the python terminal depending on the map.
 
 2. Once your map is loaded, choose the object you'd like to have randomized. It's recommended to use only static objects as the script is primarily designed for them. Make sure to leave the object highlighted before exiting the object browser table. If you want to be able to select more than one object during randomization, you will have the opportunity to do so by specifying it in the console. If you want to randomize dynamic objects, you may do so inside Forge itself with a nodegraph that should allow you to do so.
 
