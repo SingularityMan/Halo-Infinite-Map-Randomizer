@@ -19,6 +19,8 @@ import random
 import openai
 import ast
 import os
+import math
+from itertools import accumulate
 
 # OpenAI API key. Make sure it is inside a text file called 'api_key' in the same directory as this file.
 # Alternatively, you may include it in your source code or environment variables.
@@ -40,6 +42,8 @@ class MapMakerBot:
         # Include ai_generate and tuple_list as a global variable
         global ai_generate
         global tuple_list
+
+        self.coordinates_list = []  # List of previous object coordinates, to measure distance against the current object being placed in a sequence.
 
         # This is determined when the user is asked if they want to use GPT-4 to generate a structure.
         if ai_generate:
@@ -113,16 +117,19 @@ class MapMakerBot:
                 self.roll = input('What roll? (you can also type "default" for default or "r" for random) ')
 
                 if self.pitch != 'default' and self.pitch != 'r':
-                    self.pitch = int(self.pitch)
+                    self.pitch = round(float(self.pitch))
                 if self.yaw != 'default' and self.yaw != 'r':
-                    self.yaw = int(self.yaw)
+                    self.yaw = round(float(self.yaw))
                 if self.roll != 'default' and self.roll != 'r':
-                    self.roll = int(self.roll)
+                    self.roll = round(float(self.roll))
 
             if self.ai_generate:
                 position_enabled = 'y'
             else:
                 position_enabled = input('Enable position modification? (y/n) ')
+                self.distance_threshold = input("Which distance threshold would you like to set? ").strip()
+                self.distance_threshold = int(self.distance_threshold)
+                print("Setting distance threshold to ", self.distance_threshold)
 
             # Ask for position values
             if position_enabled.lower() == 'y':
@@ -133,28 +140,28 @@ class MapMakerBot:
 
                     if self.stack is False:
                         self.zpos = input(
-                            'Which z_position? (you can also type "default" for default, "r" for random or "floor" if you want the object placed on the ground.) ')
+                            'Which z_position? (you can also type "default" for default, "r" for random or "floor" if you want the object placed on the ground(float.) ')
                         if self.zpos == 'floor':
                             self.zpos = 500
 
                     if self.xpos != 'default' and self.xpos != 'r':
-                        self.xpos = int(self.xpos)
+                        self.xpos = round(float(self.xpos))
                     elif self.xpos == 'r':
-                        self.xpos_min = int(input('What is the minimum x position? '))
-                        self.xpos_max = int(input('What is the maximum x position? '))
+                        self.xpos_min = round(float(input('What is the minimum x position? ')))
+                        self.xpos_max = round(float(input('What is the maximum x position? ')))
 
                     if self.ypos != 'default' and self.ypos != 'r':
-                        self.ypos = int(self.ypos)
+                        self.ypos = round(float(self.ypos))
                     elif self.ypos == 'r':
-                        self.ypos_min = int(input('What is the minimum y position? '))
-                        self.ypos_max = int(input('What is the maximum y position? '))
+                        self.ypos_min = round(float(input('What is the minimum y position? ')))
+                        self.ypos_max = round(float(input('What is the maximum y position? ')))
 
                     if self.stack is False:
                         if self.zpos != 'default' and self.zpos != 'r':
-                            self.zpos = int(self.zpos)
+                            self.zpos = round(float(self.zpos))
                         elif self.zpos == 'r':
-                            self.zpos_min = int(input('What is the minimum z position? '))
-                            self.zpos_max = int(input('What is the maximum z position? '))
+                            self.zpos_min = round(float(input('What is the minimum z position? ')))
+                            self.zpos_max = round(float(input('What is the maximum z position? ')))
 
             # Ask for scale values
             scale_enabled = input('Enable scale modification? (y/n) ')
@@ -165,26 +172,26 @@ class MapMakerBot:
                 self.zscale = input('What zscale? (type "default" for default or "r" for random) ')
 
                 if self.xscale != 'default' and self.xscale != 'r':
-                    self.xscale = int(self.xscale)
+                    self.xscale = round(float(self.xscale))
                 elif self.xscale == 'r':
                     self.xscale_min = input('What is the minimum xscale? ')
                     self.xscale_max = input('What is the maximum xscale? ')
-                    self.xscale_min = int(self.xscale_min)
-                    self.xscale_max = int(self.xscale_max)
+                    self.xscale_min = round(float(self.xscale_min))
+                    self.xscale_max = round(float(self.xscale_max))
                 if self.yscale != 'default' and self.yscale != 'r':
-                    self.yscale = int(self.yscale)
+                    self.yscale = round(float(self.yscale))
                 elif self.yscale == 'r':
                     self.yscale_min = input('What is the minimum yscale? ')
                     self.yscale_max = input('What is the maximum yscale? ')
-                    self.yscale_min = int(self.yscale_min)
-                    self.yscale_max = int(self.yscale_max)
+                    self.yscale_min = round(float(self.yscale_min))
+                    self.yscale_max = round(float(self.yscale_max))
                 if self.zscale != 'default' and self.zscale != 'r':
-                    self.zscale = int(self.zscale)
+                    self.zscale = round(float(self.zscale))
                 elif self.zscale == 'r':
                     self.zscale_min = input('What is the minimum zscale? ')
                     self.zscale_max = input('What is the maximum zscale? ')
-                    self.zscale_min = int(self.zscale_min)
-                    self.zscale_max = int(self.zscale_max)
+                    self.zscale_min = round(float(self.zscale_min))
+                    self.zscale_max = round(float(self.zscale_max))
         else:
             self.object_properties = False
 
@@ -194,6 +201,8 @@ class MapMakerBot:
             pyautogui.keyUp(key)
 
     def add_object(self, x_ai=None, y_ai=None, z_ai=None):
+
+        self.coordinates_list.append({})
 
         # Open object browser menu
         self.press_key('r')
@@ -230,7 +239,7 @@ class MapMakerBot:
                         print('xscale', self.xscale)
                     else:
                         self.press_key('enter')
-                        pyautogui.typewrite(str(random.randint(self.xscale_min, self.xscale_max)))
+                        pyautogui.typewrite(str(random.randrange(self.xscale_min, self.xscale_max)))
                         self.press_key('enter')
                         time.sleep(self.seconds)
                         # print('xscale', self.xscale)
@@ -248,7 +257,7 @@ class MapMakerBot:
                         self.press_key('enter')
                         time.sleep(self.seconds)
                         # print('yscale', self.yscale)
-                        pyautogui.typewrite(str(random.randint(self.yscale_min, self.yscale_max)))
+                        pyautogui.typewrite(str(random.randrange(self.yscale_min, self.yscale_max)))
                         self.press_key('enter')
 
             time.sleep(self.seconds)
@@ -265,7 +274,7 @@ class MapMakerBot:
                         self.press_key('enter')
                         time.sleep(self.seconds)
                         # print('zscale', self.zscale)
-                        pyautogui.typewrite(str(random.randint(self.zscale_min, self.zscale_max)))
+                        pyautogui.typewrite(str(random.randrange(self.zscale_min, self.zscale_max)))
                         self.press_key('enter')
 
             # Input position
@@ -281,13 +290,16 @@ class MapMakerBot:
                             self.press_key('enter')
                             time.sleep(self.seconds)
                             print('xpos', self.xpos)
+                            self.coordinates_list[-1]["x"] = self.xpos
                             pyautogui.typewrite(str(self.xpos))
                             self.press_key('enter')
                         else:
                             self.press_key('enter')
                             time.sleep(self.seconds)
                             print('xpos', self.xpos)
-                            pyautogui.typewrite(str(random.randint(self.xpos_min, self.xpos_max)))
+                            rand_xpos = random.randrange(self.xpos_min, self.xpos_max)
+                            self.coordinates_list[-1]["x"] = rand_xpos
+                            pyautogui.typewrite(str(rand_xpos))
                             self.press_key('enter')
             else:
                 self.press_key('enter')
@@ -306,13 +318,16 @@ class MapMakerBot:
                             self.press_key('enter')
                             time.sleep(self.seconds)
                             print('ypos', self.ypos)
+                            self.coordinates_list[-1]["y"] = self.ypos
                             pyautogui.typewrite(str(self.ypos))
                             self.press_key('enter')
                         else:
                             self.press_key('enter')
                             time.sleep(self.seconds)
                             print('ypos', self.ypos)
-                            pyautogui.typewrite(str(random.randint(self.ypos_min, self.ypos_max)))
+                            rand_ypos = random.randrange(self.ypos_min, self.ypos_max)
+                            self.coordinates_list[-1]["y"] = rand_ypos
+                            pyautogui.typewrite(str(rand_ypos))
                             self.press_key('enter')
             else:
                 self.press_key('enter')
@@ -332,13 +347,16 @@ class MapMakerBot:
                                 self.press_key('enter')
                                 time.sleep(self.seconds)
                                 print('zpos', self.zpos)
+                                self.coordinates_list[-1]["z"] = self.zpos
                                 pyautogui.typewrite(str(self.zpos))
                                 self.press_key('enter')
                             elif self.zpos == 'r':
                                 self.press_key('enter')
                                 time.sleep(self.seconds)
                                 print('zpos', self.zpos)
-                                pyautogui.typewrite(str(random.randint(self.zpos_min, self.zpos_max)))
+                                rand_zpos = random.randrange(self.zpos_min, self.zpos_max)
+                                self.coordinates_list[-1]["z"] = rand_zpos
+                                pyautogui.typewrite(str(rand_zpos))
                                 self.press_key('enter')
                             else:
                                 self.press_key('enter')
@@ -370,7 +388,7 @@ class MapMakerBot:
                         self.press_key('enter')
                         time.sleep(self.seconds)
                         print('yaw', self.yaw)
-                        pyautogui.typewrite(str(random.randint(0, 180)))
+                        pyautogui.typewrite(str(random.randrange(0, 180)))
                         self.press_key('enter')
 
             time.sleep(self.seconds)
@@ -387,7 +405,7 @@ class MapMakerBot:
                         self.press_key('enter')
                         time.sleep(self.seconds)
                         print('pitch', self.pitch)
-                        pyautogui.typewrite(str(random.randint(0, 180)))
+                        pyautogui.typewrite(str(random.randrange(0, 180)))
                         self.press_key('enter')
 
             time.sleep(self.seconds)
@@ -404,7 +422,7 @@ class MapMakerBot:
                         self.press_key('enter')
                         time.sleep(self.seconds)
                         print('roll', self.roll)
-                        pyautogui.typewrite(str(random.randint(0, 180)))
+                        pyautogui.typewrite(str(random.randrange(0, 180)))
                         self.press_key('enter')
 
             time.sleep(self.seconds)
@@ -419,6 +437,39 @@ class MapMakerBot:
 
         if self.stack is True:
             self.press_key('end')
+
+        # Set 'remove' flag for the latest object to False
+        self.coordinates_list[-1]["remove"] = False
+
+        # Proceed only if there are at least two objects
+        if len(self.coordinates_list) > 1:
+            # Get the most recent object
+            latest_object = self.coordinates_list[-1]
+
+            # Iterate over all previous objects
+            for obj in self.coordinates_list[:-1]:
+                # Extract coordinate values, excluding the 'remove' key
+                object1_coordinates = [value for key, value in obj.items() if key != "remove"]
+                object2_coordinates = [value for key, value in latest_object.items() if key != "remove"]
+
+                # Calculate squared differences for each dimension
+                distance_squared = sum((c2 - c1) ** 2 for c1, c2 in zip(object1_coordinates, object2_coordinates))
+
+                # Compute the Euclidean distance
+                final_distance = math.sqrt(distance_squared)
+
+                print("Distance:", final_distance)
+
+                # Check if the distance is within the threshold
+                if final_distance <= self.distance_threshold:
+                    print(f"[FINAL DISTANCE THRESHOLD EXCEEDED: {final_distance} DELETING]")
+                    self.press_key('del')
+                    latest_object["remove"] = True
+                    break  # Exit the loop if a close object is found
+
+            # Remove objects marked for removal
+            self.coordinates_list = [obj for obj in self.coordinates_list if not obj.get("remove", False)]
+
 
     def generate_map(self, repetitions):
 
@@ -443,7 +494,7 @@ while True:
         ai_generate = True if input(
             "Would you like to use GPT-4 to generate a structure? (y/n) ") == 'y' and openai.api_key is not None else False
         if ai_generate is False:
-            print("\nNo API key included. Switching to Manual mode.\n")
+            print("\nEither no API key included or user declined to use GPT-4. Switching to Manual mode.\n")
         if ai_generate is True:
             mode = int(input("Which mode would you like to use? (1 = structures, 2 = environment) "))
             query = input("What would you like to build? ")
@@ -495,7 +546,7 @@ while True:
                         model="gpt-4",
                         messages=[
                             {"role": "system", "content": mode},
-                            {"role": "user", "content": feedback+"Build" + query}
+                            {"role": "user", "content": feedback + "Build" + query}
 
                         ]
                     )
@@ -521,7 +572,8 @@ while True:
                 # This is usually raised when GPT-4 includes text in the output or the format is incorrect.
                 except:
                     print("ERROR")
-                    feedback = "The previous output returned and error: \n\n{}\n\n. Please try again and follow the user's instructions carefully.\n\n".format(tuple_list)
+                    feedback = "The previous output returned and error: \n\n{}\n\n. Please try again and follow the user's instructions carefully.\n\n".format(
+                        tuple_list)
                     continue
 
     # Using the bot, breaks when player types 'n' when asked if they want to use GPT-4 instead.
@@ -533,6 +585,7 @@ while True:
         # Either method works well but GPT-4 allows for more controlled randomization.
         # i.e. GPT-4 ensures the structure is distributed evenly (clusters of trees evenly scattered, etc.)
         bot = MapMakerBot()
+        bot.coordinates_list = []
         bot.generate_map(bot.repetitions)
     if input('Would you like to add another object? (y/n) ') == 'n':
         break
