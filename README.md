@@ -36,9 +36,7 @@ Include your api key in either the "api_key" file or inside the system environme
   
 4. Return to the object browser with the desired object still highlighted, then close the object browser and delete the object from the map.
 
-5. Switch to test mode.
-
-6. Run the mapmakerbot.py script and carefully follow the instructions on the console. This stage is delicate as the script allows for a lot of customization and object transformation, but has limited error handling. Paying careful attention can help prevent errors, crashes, or unexpected outcomes.
+5. Run the mapmakerbot.py script and carefully follow the instructions on the console. This stage is delicate as the script allows for a lot of customization and object transformation, but has limited error handling. Paying careful attention can help prevent errors, crashes, or unexpected outcomes.
 
 # Running the Script
 
